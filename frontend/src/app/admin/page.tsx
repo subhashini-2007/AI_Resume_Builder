@@ -251,7 +251,7 @@ export default function AdminDashboardPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
             
             {templates.map(tpl => (
-              <div key={tpl.id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyGap: '1rem' }}>
+              <div key={tpl.id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h4 style={{ fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     <LayoutGrid size={18} color="var(--accent-secondary)" />
@@ -273,7 +273,7 @@ export default function AdminDashboardPage() {
                 <button 
                   onClick={() => setEditingTemplate(tpl)} 
                   className="btn-secondary"
-                  style={{ display: 'flex', alignItems: 'center', justifyAlignment: 'center', gap: '0.4rem', fontSize: '0.85rem', padding: '0.5rem 1rem' }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.85rem', padding: '0.5rem 1rem' }}
                 >
                   <Settings size={14} />
                   <span>Configure layout styles</span>
@@ -328,7 +328,7 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', justifyGrid: 'flex-end', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
                 <button type="button" onClick={() => setEditingTemplate(null)} className="btn-secondary" style={{ padding: '0.5rem 1rem' }}>
                   Cancel
                 </button>

@@ -153,16 +153,6 @@ export default function Navbar() {
 
       </div>
 
-      <style jsx global>{`
-        .nav-link:hover {
-          color: var(--text-primary) !important;
-        }
-        @media (max-width: 640px) {
-          .user-email-header {
-            display: none !important;
-          }
-        }
-      `}</style>
     </header>
   );
 }

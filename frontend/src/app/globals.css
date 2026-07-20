@@ -259,3 +259,12 @@ a {
   background: rgba(239, 68, 68, 0.1) !important;
   border-color: var(--error) !important;
 }
+
+.nav-link:hover {
+  color: var(--text-primary) !important;
+}
+@media (max-width: 640px) {
+  .user-email-header {
+    display: none !important;
+  }
+}
