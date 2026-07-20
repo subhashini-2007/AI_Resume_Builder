@@ -1,0 +1,63 @@
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes';
+import resumeRoutes from './routes/resumeRoutes';
+import templateRoutes from './routes/templateRoutes';
+import aiRoutes from './routes/aiRoutes';
+import coverLetterRoutes from './routes/coverLetterRoutes';
+import pdfRoutes from './routes/pdfRoutes';
+import adminRoutes from './routes/adminRoutes';
+
+// Load environment variables
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+import { apiRateLimiter } from './middleware/rateLimiter';
+
+// Middleware
+app.use(cors({
+  origin: '*', // Adjust to specific origins in production
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(express.json());
+app.use(morgan('dev'));
+app.use(apiRateLimiter);
+
+// Mount routes
+app.use('/api/users', userRoutes);
+app.use('/api/resumes', resumeRoutes);
+app.use('/api/templates', templateRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/cover-letters', coverLetterRoutes);
+app.use('/api/pdf', pdfRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Health check endpoint
+app.get('/api/health', (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'UP',
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Error handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error('Unhandled Error:', err.stack);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : err.message
+  });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+export default app;

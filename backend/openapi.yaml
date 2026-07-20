@@ -1,0 +1,453 @@
+openapi: 3.0.3
+info:
+  title: AI Resume Builder API
+  description: Backend services for user authentication, dashboard analytics, resume CRUD operations, Gemini AI integrations, and pdf export event tracking.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local Development Server
+paths:
+  /api/users/profile:
+    get:
+      summary: Retrieve authenticated user profile details
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved successfully
+        '401':
+          description: Unauthorized
+    put:
+      summary: Update user profile parameters
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                title:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated successfully
+        '400':
+          description: Bad request or validation failure
+
+  /api/resumes:
+    post:
+      summary: Create a new resume
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                templateId:
+                  type: string
+                personalInfo:
+                  type: object
+                experience:
+                  type: array
+                  items:
+                    type: object
+                education:
+                  type: array
+                  items:
+                    type: object
+                projects:
+                  type: array
+                  items:
+                    type: object
+                skills:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Resume created successfully
+    get:
+      summary: List all resumes owned by the authenticated user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Array of user resumes returned
+
+  /api/resumes/{id}:
+    get:
+      summary: Fetch a specific resume by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resume details returned
+        '404':
+          description: Resume not found
+    put:
+      summary: Modify resume fields
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Resume updated successfully
+    delete:
+      summary: Delete a specific resume
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resume deleted successfully
+
+  /api/resumes/{id}/history:
+    post:
+      summary: Save a snapshot revision checkpoint of the resume
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - versionName
+              properties:
+                versionName:
+                  type: string
+                resumeData:
+                  type: object
+      responses:
+        '201':
+          description: Revision checkpoint saved successfully
+    get:
+      summary: Retrieve all revision timelines for a resume
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Timeline checkpoints returned
+
+  /api/resumes/{id}/restore/{historyId}:
+    post:
+      summary: Roll back resume fields to a historical checkpoint revision
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: historyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resume fields rehydrated successfully
+
+  /api/ai/summary:
+    post:
+      summary: Compile and write a professional resume summary using Gemini
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Summary text generated
+
+  /api/ai/grammar:
+    post:
+      summary: Correct grammatical errors and rephrase description bullets
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+      responses:
+        '200':
+          description: Rephrased text returned
+
+  /api/ai/ats:
+    post:
+      summary: Compare resume details against job specifications for keyword density
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - jobDescription
+              properties:
+                jobDescription:
+                  type: string
+                resumeData:
+                  type: object
+      responses:
+        '200':
+          description: Match score percentage and missing keywords list returned
+
+  /api/ai/job-match:
+    post:
+      summary: Evaluate semantic suitability match percentage against a job description
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - jobDescription
+              properties:
+                jobDescription:
+                  type: string
+                resumeData:
+                  type: object
+      responses:
+        '200':
+          description: Semantic match score and recruiter evaluation returned
+
+  /api/ai/skill-suggestions:
+    post:
+      summary: Extract missing skills and compile advice tips to write them in
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - jobDescription
+              properties:
+                jobDescription:
+                  type: string
+                resumeData:
+                  type: object
+      responses:
+        '200':
+          description: Coach tips array returned
+
+  /api/ai/interview:
+    post:
+      summary: Generate custom technical mock interview questions and sample answers
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - resumeId
+              properties:
+                resumeId:
+                  type: string
+                resumeData:
+                  type: object
+      responses:
+        '200':
+          description: Q&A mock prep list returned
+
+  /api/cover-letters:
+    post:
+      summary: Draft a tailored 3-4 paragraph Cover Letter using Gemini
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - resumeId
+                - companyName
+              properties:
+                resumeId:
+                  type: string
+                companyName:
+                  type: string
+                recipientName:
+                  type: string
+                jobDescription:
+                  type: string
+                resumeData:
+                  type: object
+      responses:
+        '201':
+          description: Cover letter compiled successfully
+
+  /api/cover-letters/resume/{resumeId}:
+    get:
+      summary: Fetch cover letter linked to a specific resume ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: resumeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cover letter details returned
+
+  /api/cover-letters/{id}:
+    put:
+      summary: Update custom cover letter draft contents
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - letterContent
+              properties:
+                letterContent:
+                  type: string
+      responses:
+        '200':
+          description: Cover letter updated successfully
+
+  /api/pdf/generate:
+    post:
+      summary: Log PDF export events for usage telemetry analytics
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - resumeId
+              properties:
+                resumeId:
+                  type: string
+                templateId:
+                  type: string
+                exportType:
+                  type: string
+      responses:
+        '201':
+          description: Export action logged successfully
+
+  /api/admin/analytics:
+    get:
+      summary: Retrieve system-wide analytics metrics (Admin privileges required)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Metrics aggregated across database collections returned
+
+  /api/admin/log:
+    post:
+      summary: Record custom admin audit logs
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                details:
+                  type: string
+      responses:
+        '201':
+          description: Audit log created successfully
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

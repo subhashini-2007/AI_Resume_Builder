@@ -1,0 +1,25 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User Profiles
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Resumes
+    match /resumes/{resumeId} {
+      // Allow read/update/delete if the document matches user's UID
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      
+      // Allow creation if user is authenticated and sets the creator UID to their own auth UID
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Default fallback - deny access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
