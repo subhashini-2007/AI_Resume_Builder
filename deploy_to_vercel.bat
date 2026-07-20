@@ -6,6 +6,7 @@ echo.
 echo [1/3] Logging in to Vercel...
 echo Please choose "Continue with GitHub" in the browser tab that opens.
 echo.
+set VERCEL_TELEMETRY_DISABLED=1
 cd frontend
 call npx vercel login
 
@@ -13,12 +14,12 @@ echo.
 echo [2/3] Linking and deploying project to Vercel...
 echo (Answer the questions in the console. Press Enter to select defaults)
 echo.
-call npx vercel
+call npx vercel --disable-telemetry
 
 echo.
 echo [3/3] Deploying to Production environment...
 echo.
-call npx vercel --prod
+call npx vercel --prod --disable-telemetry
 
 echo.
 echo ===================================================
