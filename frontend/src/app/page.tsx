@@ -245,9 +245,9 @@ export default function LandingPage() {
       }}>
         <span>&copy; {new Date().getFullYear()} Resumify AI. Built with Antigravity.</span>
         <div style={{ display: 'flex', gap: '1.5rem' }}>
-          <a href="#" style={{ hover: { color: 'var(--text-primary)' } }}>Terms</a>
-          <a href="#">Privacy</a>
-          <a href="#">Security</a>
+          <a href="#" className="nav-link">Terms</a>
+          <a href="#" className="nav-link">Privacy</a>
+          <a href="#" className="nav-link">Security</a>
         </div>
       </footer>
 

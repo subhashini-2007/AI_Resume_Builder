@@ -120,10 +120,10 @@ export default function ResumePreview({
           },
           accentColor: 'var(--accent-primary)',
           accentText: 'gradient-text',
-          divider: 'rgba(139, 92, 246, 0.2)',
+          divider: 'var(--template-divider)',
           tagStyle: {
-            background: 'rgba(139, 92, 246, 0.1)',
-            border: '1px solid rgba(139, 92, 246, 0.2)',
+            background: 'var(--template-tag-bg)',
+            border: '1px solid var(--template-tag-border)',
             color: 'var(--text-primary)'
           }
         };
