@@ -332,3 +332,12 @@ a {
     display: none !important;
   }
 }
+
+.remove-tag-btn {
+  transition: color var(--transition-fast);
+}
+
+.remove-tag-btn:hover {
+  color: var(--error) !important;
+}
+

@@ -1028,7 +1028,8 @@ export default function ResumeEditorPage() {
                         <X 
                           size={14} 
                           color="var(--text-muted)" 
-                          style={{ cursor: 'pointer', hover: { color: 'var(--error)' } }} 
+                          className="remove-tag-btn"
+                          style={{ cursor: 'pointer' }} 
                           onClick={() => handleRemoveSkill(skill)}
                         />
                       </span>
