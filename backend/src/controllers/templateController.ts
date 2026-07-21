@@ -41,7 +41,7 @@ export const getTemplates = async (req: Request, res: Response) => {
       // Seed templates if DB exists but is empty
       const batch = adminDb.batch();
       DEFAULT_TEMPLATES.forEach((tmpl) => {
-        const docRef = adminDb.collection('templates').doc(tmpl.id);
+        const docRef = adminDb!.collection('templates').doc(tmpl.id);
         batch.set(docRef, tmpl);
       });
       await batch.commit();

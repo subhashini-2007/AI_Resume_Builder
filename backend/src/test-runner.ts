@@ -3,17 +3,17 @@ import { apiRateLimiter, aiRateLimiter } from './middleware/rateLimiter';
 import { validateProfile, validateResume } from './middleware/validate';
 
 // Setup Mock HTTP Response generator
-const mockResponse = () => {
-  const res: Partial<Response> = {};
+const mockResponse = (): any => {
+  const res: any = {};
   res.status = jestLikeFn((code: number) => {
     res.statusCode = code;
-    return res as Response;
+    return res;
   });
   res.json = jestLikeFn((data: any) => {
     res.body = data;
-    return res as Response;
+    return res;
   });
-  return res as Response;
+  return res;
 };
 
 const jestLikeFn = (fn: Function) => {
