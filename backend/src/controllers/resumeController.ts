@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { adminDb } from '../lib/firebaseAdmin';
 
 // Simple in-memory fallback for local development without Firebase credentials
@@ -7,7 +7,7 @@ let localResumeMemory: Record<string, any[]> = {};
 // Helper to generate a random ID for mock mode
 const generateId = () => Math.random().toString(36).substring(2, 15);
 
-export const createResume = async (req: Request, res: Response) => {
+export const createResume = async (req: Request, res: Response, next: NextFunction) => {
   const uid = req.user?.uid;
   if (!uid) {
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
@@ -76,11 +76,11 @@ export const createResume = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error('Error creating resume:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    next(error);
   }
 };
 
-export const getResumes = async (req: Request, res: Response) => {
+export const getResumes = async (req: Request, res: Response, next: NextFunction) => {
   const uid = req.user?.uid;
   if (!uid) {
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
@@ -101,7 +101,7 @@ export const getResumes = async (req: Request, res: Response) => {
     res.status(200).json(resumes);
   } catch (error: any) {
     console.error('Error fetching resumes:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    next(error);
   }
 };
 
