@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
+  output: process.env.VERCEL ? undefined : 'export',
   trailingSlash: true,
   images: {
     unoptimized: true,

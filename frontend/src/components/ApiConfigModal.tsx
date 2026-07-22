@@ -97,7 +97,7 @@ export default function ApiConfigModal({ isOpen, onClose }: ApiConfigModalProps)
   };
 
   const handleReset = () => {
-    const defaultUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+    const defaultUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://ai-resume-builder-ysoe.onrender.com';
     setUrl(defaultUrl);
     setStatus('idle');
     setStatusMessage('');
@@ -191,7 +191,7 @@ export default function ApiConfigModal({ isOpen, onClose }: ApiConfigModalProps)
             <input 
               type="text" 
               className="form-input" 
-              placeholder="e.g. http://192.168.1.100:5000"
+              placeholder="e.g. https://api-server.com"
               value={url}
               onChange={(e) => {
                 setUrl(e.target.value);
@@ -257,51 +257,7 @@ export default function ApiConfigModal({ isOpen, onClose }: ApiConfigModalProps)
           </div>
         )}
 
-        {/* Developer Guide / Instructions */}
-        <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.02)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '10px',
-          padding: '1rem 1.25rem',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-          fontSize: '0.8rem',
-          lineHeight: '1.4'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-primary)', fontWeight: 700 }}>
-            <HelpCircle size={14} style={{ color: 'var(--accent-secondary)' }} />
-            <span>Connecting from a Mobile Device:</span>
-          </div>
-          
-          {isMobileEnv ? (
-            <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <li>
-                <strong>Option A (Local IP)</strong>: Connect both your phone and PC to the same Wi-Fi. Replace <code>localhost</code> in the URL above with your computer's local IP address (e.g. <code>http://192.168.1.50:5000</code>).
-              </li>
-              <li>
-                <strong>Option B (ADB Forwarding)</strong>: If connected via USB, run the following command on your PC's command line to route traffic automatically:
-                <div style={{ 
-                  margin: '0.3rem 0',
-                  padding: '0.35rem 0.6rem',
-                  background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  borderRadius: '4px',
-                  fontFamily: 'monospace',
-                  userSelect: 'all',
-                  color: 'var(--text-primary)'
-                }}>
-                  adb reverse tcp:5000 tcp:5000
-                </div>
-                Then keep the URL set to <code>http://localhost:5000</code>.
-              </li>
-            </ul>
-          ) : (
-            <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
-              If you run this application on an Android device, <code>localhost</code> points to the phone. You must configure it to point to your computer's local network IP address (e.g., <code>http://192.168.x.x:5000</code>) or run <code>adb reverse tcp:5000 tcp:5000</code> over USB.
-            </p>
-          )}
-        </div>
+        {/* API Server connection details */}
 
         {/* Modal Actions */}
         <div style={{

@@ -5,7 +5,9 @@ const config: CapacitorConfig = {
   appName: 'AI Resume Builder',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    url: 'https://ai-resume-builder-cyan-phi.vercel.app',
+    cleartext: true
   },
   plugins: {
     SplashScreen: {

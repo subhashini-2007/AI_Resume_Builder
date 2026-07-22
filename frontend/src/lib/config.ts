@@ -1,7 +1,7 @@
 /**
  * Configuration manager for backend API URL.
  * Allows dynamic override in client environments (e.g., Capacitor Android/iOS)
- * where localhost is not accessible.
+ * where the local development server is not accessible.
  */
 
 export function getBackendUrl(): string {
@@ -11,7 +11,7 @@ export function getBackendUrl(): string {
       return custom;
     }
   }
-  return process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+  return process.env.NEXT_PUBLIC_BACKEND_URL || 'https://ai-resume-builder-ysoe.onrender.com';
 }
 
 export function setBackendUrl(url: string): void {

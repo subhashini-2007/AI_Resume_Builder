@@ -14,7 +14,7 @@ echo.
 echo ===================================================
 echo   Launch commands sent!
 echo   A fresh installation is starting in the frontend window.
-echo   - Backend API: http://localhost:5000
-echo   - Frontend Client: http://localhost:3000
+echo   - Backend API: https://ai-resume-builder-ysoe.onrender.com
+echo   - Frontend Client: https://ai-resume-builder-cyan-phi.vercel.app
 echo ===================================================
 pause

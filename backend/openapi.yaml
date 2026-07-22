@@ -4,8 +4,8 @@ info:
   description: Backend services for user authentication, dashboard analytics, resume CRUD operations, Gemini AI integrations, and pdf export event tracking.
   version: 1.0.0
 servers:
-  - url: http://localhost:5000
-    description: Local Development Server
+  - url: https://ai-resume-builder-ysoe.onrender.com
+    description: Production Backend Server
 paths:
   /api/users/profile:
     get:

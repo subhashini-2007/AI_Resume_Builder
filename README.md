@@ -33,7 +33,7 @@ GEMINI_API_KEY=your-gemini-api-key
 #### Frontend Env Config ([/frontend/.env.local](file:///c:/Users/subha/OneDrive/Desktop/AI_Resume_Builder/frontend/.env.local))
 Create a `.env.local` file inside the `frontend` folder:
 ```env
-NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
+NEXT_PUBLIC_BACKEND_URL=https://ai-resume-builder-ysoe.onrender.com
 NEXT_PUBLIC_FIREBASE_API_KEY=dummy-api-key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=dummy-project.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=dummy-project-id
@@ -51,7 +51,7 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=dummy-project-id
    ```bash
    npm run dev
    ```
-   *The server starts listening on: `http://localhost:5000`*
+   *The server starts listening on: `https://ai-resume-builder-ysoe.onrender.com`*
 
 #### Step 2: Run Security Test Suite
 Verify rate limiters, input sanitizers, and validation controls:
@@ -71,7 +71,7 @@ Verify rate limiters, input sanitizers, and validation controls:
    ```bash
    npm run dev
    ```
-   *Open your browser and navigate to: `http://localhost:3000`*
+   *Open your browser and navigate to: `https://ai-resume-builder-cyan-phi.vercel.app`*
 
 ---
 

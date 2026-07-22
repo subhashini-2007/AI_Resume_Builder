@@ -194,7 +194,7 @@ export default function DashboardPage() {
                 color: 'var(--text-secondary)'
               }}>
                 <p style={{ margin: 0, fontSize: '0.85rem' }}>
-                  If the backend server is running on your computer and you are viewing this app on a mobile phone, the app cannot connect to <code>localhost</code>. You must use your computer's local IP address or setup ADB port forwarding.
+                  Please check your internet connection or verify if the API server is online.
                 </p>
                 <button
                   onClick={() => setIsConfigOpen(true)}
