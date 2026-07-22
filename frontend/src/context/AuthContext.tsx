@@ -24,7 +24,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const isMockMode = !process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 
-                     process.env.NEXT_PUBLIC_FIREBASE_API_KEY.startsWith('dummy');
+                     process.env.NEXT_PUBLIC_FIREBASE_API_KEY.startsWith('dummy') ||
+                     process.env.NEXT_PUBLIC_FIREBASE_API_KEY.startsWith('your-');
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);

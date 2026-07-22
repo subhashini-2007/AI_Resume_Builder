@@ -11,7 +11,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const isMockMode = !firebaseConfig.apiKey || firebaseConfig.apiKey.startsWith('dummy');
+const isMockMode = !firebaseConfig.apiKey || 
+                     firebaseConfig.apiKey.startsWith('dummy') || 
+                     firebaseConfig.apiKey.startsWith('your-');
 
 let app: any;
 let auth: any;
