@@ -356,3 +356,29 @@ a {
   color: var(--error) !important;
 }
 
+/* Editor & Preview Workspace Grid Styles */
+.main-workspace-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.resume-split-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .main-workspace-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .resume-split-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+

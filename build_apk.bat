@@ -1,4 +1,19 @@
 @echo off
+
+:: Auto-detect JAVA_HOME from standard Android Studio path if not set
+if "%JAVA_HOME%"=="" (
+    if exist "C:\Program Files\Android\Android Studio\jbr" (
+        set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
+    ) else if exist "C:\Program Files\Android\Android Studio\jre" (
+        set "JAVA_HOME=C:\Program Files\Android\Android Studio\jre"
+    )
+)
+
+:: If JAVA_HOME is set, add its bin directory to PATH for keytool/gradlew
+if not "%JAVA_HOME%"=="" (
+    set "PATH=%JAVA_HOME%\bin;%PATH%"
+)
+
 echo ===================================================
 echo   AI Resume Builder - APK Builder (No Android Studio)
 echo ===================================================

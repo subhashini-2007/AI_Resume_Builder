@@ -67,8 +67,10 @@ export const generateSummary = async (req: Request, res: Response) => {
     await logAiTransaction(uid, 'summary', { targetTitle, skills }, summaryText);
     res.status(200).json({ summary: summaryText });
   } catch (error: any) {
-    console.error('Error generating summary with Gemini:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    console.error('Error generating summary with Gemini, falling back to mock:', error);
+    const mockSummary = `Highly accomplished ${targetTitle || 'Professional'} with experience delivering robust solutions. Proven track record of leveraging core competencies in ${skills && skills.length > 0 ? skills.slice(0, 3).join(', ') : 'modern technologies'} to optimize workflows, build scalable projects, and support business milestones. Adept at cross-functional collaboration and technical implementations to achieve high-performance results.`;
+    await logAiTransaction(uid, 'summary', { targetTitle, skills }, mockSummary);
+    res.status(200).json({ summary: mockSummary, mode: 'mock-fallback', error: error.message });
   }
 };
 
@@ -105,8 +107,10 @@ export const polishGrammar = async (req: Request, res: Response) => {
     await logAiTransaction(uid, 'grammar', text, polishedText);
     res.status(200).json({ polishedText });
   } catch (error: any) {
-    console.error('Error polishing grammar with Gemini:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    console.error('Error polishing grammar with Gemini, falling back to mock:', error);
+    const mockPolished = `Spearheaded design and development workflows for core features using target technologies, resulting in an optimized user experience and improved systems efficiency.`;
+    await logAiTransaction(uid, 'grammar', text, mockPolished);
+    res.status(200).json({ polishedText: mockPolished, mode: 'mock-fallback', error: error.message });
   }
 };
 
@@ -187,9 +191,8 @@ export const checkAts = async (req: Request, res: Response) => {
     }
   }
 
-  try {
-    // Save report in Firestore
-    if (adminDb) {
+  if (adminDb) {
+    try {
       await adminDb.collection('atsReports').add({
         userId: uid,
         resumeId: resumeId || 'unknown',
@@ -199,13 +202,12 @@ export const checkAts = async (req: Request, res: Response) => {
         suggestions: resultJson.suggestions,
         createdAt: new Date().toISOString()
       });
+    } catch (dbError: any) {
+      console.error('Error saving ATS report to Firestore:', dbError);
     }
-
-    res.status(200).json(resultJson);
-  } catch (error: any) {
-    console.error('Error saving ATS report:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
+
+  res.status(200).json(resultJson);
 };
 
 export const checkJobMatch = async (req: Request, res: Response) => {
@@ -265,8 +267,8 @@ export const checkJobMatch = async (req: Request, res: Response) => {
     }
   }
 
-  try {
-    if (adminDb) {
+  if (adminDb) {
+    try {
       await adminDb.collection('jobMatches').add({
         userId: uid,
         resumeId: resumeId || 'unknown',
@@ -274,13 +276,12 @@ export const checkJobMatch = async (req: Request, res: Response) => {
         explanation: resultJson.explanation,
         createdAt: new Date().toISOString()
       });
+    } catch (dbError: any) {
+      console.error('Error saving job match report to Firestore:', dbError);
     }
-
-    res.status(200).json(resultJson);
-  } catch (error: any) {
-    console.error('Error saving job match report:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
+
+  res.status(200).json(resultJson);
 };
 
 export const suggestSkills = async (req: Request, res: Response) => {
@@ -344,21 +345,20 @@ export const suggestSkills = async (req: Request, res: Response) => {
     }
   }
 
-  try {
-    if (adminDb) {
+  if (adminDb) {
+    try {
       await adminDb.collection('skillSuggestions').add({
         userId: uid,
         resumeId: resumeId || 'unknown',
         suggestions: resultJson.suggestions,
         createdAt: new Date().toISOString()
       });
+    } catch (dbError: any) {
+      console.error('Error saving skill suggestions report to Firestore:', dbError);
     }
-
-    res.status(200).json(resultJson);
-  } catch (error: any) {
-    console.error('Error saving skill suggestions report:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
+
+  res.status(200).json(resultJson);
 };
 
 export const generateInterviewQuestions = async (req: Request, res: Response) => {
@@ -452,19 +452,18 @@ export const generateInterviewQuestions = async (req: Request, res: Response) =>
     }
   }
 
-  try {
-    if (adminDb) {
+  if (adminDb) {
+    try {
       await adminDb.collection('interviewQuestions').add({
         userId: uid,
         resumeId,
         questions: resultJson.questions,
         createdAt: new Date().toISOString()
       });
+    } catch (dbError: any) {
+      console.error('Error saving mock interview questions to Firestore:', dbError);
     }
-
-    res.status(200).json(resultJson);
-  } catch (error: any) {
-    console.error('Error saving mock interview questions:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
+
+  res.status(200).json(resultJson);
 };

@@ -54,8 +54,8 @@ export const getTemplates = async (req: Request, res: Response) => {
     });
     res.status(200).json(templates);
   } catch (error: any) {
-    console.error('Error fetching templates:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    console.error('Error fetching templates from Firestore, falling back to defaults:', error);
+    res.status(200).json(DEFAULT_TEMPLATES);
   }
 };
 
@@ -74,11 +74,19 @@ export const getTemplateById = async (req: Request, res: Response) => {
   try {
     const doc = await adminDb!.collection('templates').doc(id).get();
     if (!doc.exists) {
-      return res.status(404).json({ error: 'Not Found', message: 'Template not found.' });
+      const tmpl = DEFAULT_TEMPLATES.find((t) => t.id === id);
+      if (!tmpl) {
+        return res.status(404).json({ error: 'Not Found', message: 'Template not found.' });
+      }
+      return res.status(200).json(tmpl);
     }
     res.status(200).json(doc.data());
   } catch (error: any) {
-    console.error('Error fetching template by ID:', error);
-    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    console.error('Error fetching template by ID from Firestore, falling back to defaults:', error);
+    const tmpl = DEFAULT_TEMPLATES.find((t) => t.id === id);
+    if (!tmpl) {
+      return res.status(404).json({ error: 'Not Found', message: 'Template not found.', details: error.message });
+    }
+    res.status(200).json(tmpl);
   }
 };

@@ -487,7 +487,7 @@ export default function ResumeEditorPage() {
         )}
 
         {/* Workspace Layout: Sidebar + Dynamic Content Pane */}
-        <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '2.5rem', alignItems: 'start' }} className="main-workspace-grid">
+        <div className="main-workspace-grid">
           
           {/* Sidebar Tabs */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} className="editor-tabs">
@@ -725,7 +725,7 @@ export default function ResumeEditorPage() {
                 />
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '2rem', alignItems: 'start' }} className="resume-split-grid">
+              <div className="resume-split-grid">
                 
                 {/* Form Content Panel */}
                 <div className="glass-panel" style={{ padding: '2.5rem' }}>

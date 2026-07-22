@@ -16,7 +16,7 @@ if %ERRORLEVEL% EQU 0 (
 :: Try running from default LocalAppData path
 if exist "%LocalAppData%\Android\Sdk\platform-tools\adb.exe" (
     "%LocalAppData%\Android\Sdk\platform-tools\adb.exe" reverse tcp:5000 tcp:5000
-    if %ERRORLEVEL% EQU 0 (
+    if not errorlevel 1 (
         echo.
         echo [SUCCESS] ADB port forwarding set up successfully using Android SDK path!
     ) else (
