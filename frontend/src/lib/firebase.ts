@@ -11,9 +11,28 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase for SSR compatibility
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
+const isMockMode = !firebaseConfig.apiKey || firebaseConfig.apiKey.startsWith('dummy');
+
+let app: any;
+let auth: any;
+let db: any;
+
+if (!isMockMode) {
+  try {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+    db = getFirestore(app);
+  } catch (error) {
+    console.error('Failed to initialize real Firebase:', error);
+    app = {};
+    auth = {} as any;
+    db = {} as any;
+  }
+} else {
+  // Mock mode: provide safe dummy objects so imports don't crash
+  app = {};
+  auth = {} as any;
+  db = {} as any;
+}
 
 export { app, auth, db };
