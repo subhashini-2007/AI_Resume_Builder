@@ -37,6 +37,11 @@ app.use('/api/cover-letters', coverLetterRoutes);
 app.use('/api/pdf', pdfRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Root landing endpoint
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).send('<h1>AI Resume Builder Backend API</h1><p>The server is running successfully! Access the health check at <a href="/api/health">/api/health</a>.</p>');
+});
+
 // Health check endpoint
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({
