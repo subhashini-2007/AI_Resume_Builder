@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import { adminDb } from './lib/firebaseAdmin';
 import userRoutes from './routes/userRoutes';
 import resumeRoutes from './routes/resumeRoutes';
 import templateRoutes from './routes/templateRoutes';
@@ -51,9 +52,23 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
+let lastError: any = null;
+
+// Debug endpoint to retrieve the last unhandled server error
+app.get('/api/debug', (req: Request, res: Response) => {
+  res.status(200).json({
+    hasError: !!lastError,
+    message: lastError?.message || 'No errors registered',
+    stack: lastError?.stack || null,
+    env: process.env.NODE_ENV,
+    adminDbInitialized: !!adminDb
+  });
+});
+
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Unhandled Error:', err.stack);
+  lastError = err;
   res.status(500).json({
     error: 'Internal Server Error',
     message: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : err.message
