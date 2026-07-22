@@ -53,15 +53,27 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 let lastError: any = null;
+let recentRequests: string[] = [];
 
-// Debug endpoint to retrieve the last unhandled server error
+// Request logger middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const logEntry = `${req.method} ${req.originalUrl} - Headers: ${JSON.stringify(req.headers)} - Time: ${new Date().toISOString()}`;
+  recentRequests.unshift(logEntry);
+  if (recentRequests.length > 30) {
+    recentRequests.pop();
+  }
+  next();
+});
+
+// Debug endpoint to retrieve the last unhandled server error and recent request log
 app.get('/api/debug', (req: Request, res: Response) => {
   res.status(200).json({
     hasError: !!lastError,
     message: lastError?.message || 'No errors registered',
     stack: lastError?.stack || null,
     env: process.env.NODE_ENV,
-    adminDbInitialized: !!adminDb
+    adminDbInitialized: !!adminDb,
+    recentRequests
   });
 });
 
