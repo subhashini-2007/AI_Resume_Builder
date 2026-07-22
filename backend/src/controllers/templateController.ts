@@ -30,16 +30,16 @@ const DEFAULT_TEMPLATES = [
 ];
 
 export const getTemplates = async (req: Request, res: Response) => {
-  // Fallback to defaults if Firestore DB is not initialized
-  if (!adminDb) {
+  const isMock = !adminDb || req.headers.authorization?.includes('mock-dev-token');
+  if (isMock) {
     return res.status(200).json(DEFAULT_TEMPLATES);
   }
 
   try {
-    const snapshot = await adminDb.collection('templates').get();
+    const snapshot = await adminDb!.collection('templates').get();
     if (snapshot.empty) {
       // Seed templates if DB exists but is empty
-      const batch = adminDb.batch();
+      const batch = adminDb!.batch();
       DEFAULT_TEMPLATES.forEach((tmpl) => {
         const docRef = adminDb!.collection('templates').doc(tmpl.id);
         batch.set(docRef, tmpl);
@@ -62,7 +62,8 @@ export const getTemplates = async (req: Request, res: Response) => {
 export const getTemplateById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  if (!adminDb) {
+  const isMock = !adminDb || req.headers.authorization?.includes('mock-dev-token');
+  if (isMock) {
     const tmpl = DEFAULT_TEMPLATES.find((t) => t.id === id);
     if (!tmpl) {
       return res.status(404).json({ error: 'Not Found', message: 'Template not found.' });
@@ -71,7 +72,7 @@ export const getTemplateById = async (req: Request, res: Response) => {
   }
 
   try {
-    const doc = await adminDb.collection('templates').doc(id).get();
+    const doc = await adminDb!.collection('templates').doc(id).get();
     if (!doc.exists) {
       return res.status(404).json({ error: 'Not Found', message: 'Template not found.' });
     }

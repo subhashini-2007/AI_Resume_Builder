@@ -40,8 +40,8 @@ export const createResume = async (req: Request, res: Response, next: NextFuncti
     updatedAt: new Date().toISOString(),
   };
 
-  // Fallback to local memory if Firebase Admin DB is not initialized (dev mock mode)
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const resumeId = generateId();
     const createdResume = { id: resumeId, ...newResume };
     if (!localResumeMemory[uid]) {
@@ -86,8 +86,8 @@ export const getResumes = async (req: Request, res: Response, next: NextFunction
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
   }
 
-  // Fallback to local memory if Firebase Admin DB is not initialized (dev mock mode)
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const userResumes = localResumeMemory[uid] || [];
     return res.status(200).json(userResumes);
   }
@@ -112,8 +112,8 @@ export const getResumeById = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
   }
 
-  // Fallback to local memory if Firebase Admin DB is not initialized (dev mock mode)
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const userResumes = localResumeMemory[uid] || [];
     const resume = userResumes.find((r) => r.id === id);
     if (!resume) {
@@ -163,8 +163,8 @@ export const updateResume = async (req: Request, res: Response) => {
   if (skills !== undefined) updateData.skills = skills;
   if (projects !== undefined) updateData.projects = projects;
 
-  // Fallback to local memory if Firebase Admin DB is not initialized (dev mock mode)
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const userResumes = localResumeMemory[uid] || [];
     const index = userResumes.findIndex((r) => r.id === id);
     if (index === -1) {
@@ -209,8 +209,8 @@ export const deleteResume = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
   }
 
-  // Fallback to local memory if Firebase Admin DB is not initialized (dev mock mode)
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const userResumes = localResumeMemory[uid] || [];
     const index = userResumes.findIndex((r) => r.id === id);
     if (index === -1) {
@@ -264,8 +264,8 @@ export const createRevision = async (req: Request, res: Response) => {
     createdAt: new Date().toISOString()
   };
 
-  // Fallback to local memory if Firebase Admin DB is not initialized
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     if (!localHistoryMemory[id]) {
       localHistoryMemory[id] = [];
     }
@@ -290,8 +290,8 @@ export const getRevisionHistory = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
   }
 
-  // Fallback to local memory if Firebase Admin DB is not initialized
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const history = localHistoryMemory[id] || [];
     return res.status(200).json(history);
   }
@@ -322,8 +322,8 @@ export const restoreRevision = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
   }
 
-  // Fallback to local memory if Firebase Admin DB is not initialized
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const history = localHistoryMemory[id] || [];
     const revision = history.find(rev => rev.id === historyId);
     if (!revision) {

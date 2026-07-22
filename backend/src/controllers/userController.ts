@@ -10,8 +10,8 @@ export const getProfile = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Unauthorized', message: 'User not authenticated.' });
   }
 
-  // Fallback to local memory if Firebase Admin DB is not initialized (dev mock mode)
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const mockProfile = localUserMemory[uid] || {
       email: req.user?.email || '',
       firstName: '',
@@ -87,8 +87,8 @@ export const updateProfile = async (req: Request, res: Response) => {
     updatedAt: new Date().toISOString(),
   };
 
-  // Fallback to local memory if Firebase Admin DB is not initialized (dev mock mode)
-  if (!adminDb) {
+  // Fallback to local memory if Firebase Admin DB is not initialized or in mock mode
+  if (!adminDb || uid.startsWith('mock-')) {
     const existing = localUserMemory[uid] || { createdAt: new Date().toISOString() };
     localUserMemory[uid] = {
       ...existing,
