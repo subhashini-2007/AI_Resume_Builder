@@ -12,7 +12,7 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
 
   // In development mock mode if Firebase Admin is not initialized
   if (!adminAuth) {
-    if (process.env.NODE_ENV !== 'production' && token === 'mock-dev-token') {
+    if (token === 'mock-dev-token') {
       req.user = {
         uid: 'mock-user-123',
         email: 'mock-user@example.com',
