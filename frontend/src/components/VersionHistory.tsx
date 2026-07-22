@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getBackendUrl } from '@/lib/config';
 import { 
   History, 
   Plus, 
@@ -38,7 +39,7 @@ export default function VersionHistory({
   const fetchHistory = async () => {
     try {
       const token = await getIdToken();
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/resumes/${resumeId}/history`, {
+      const response = await fetch(`${getBackendUrl()}/api/resumes/${resumeId}/history`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token || 'mock-dev-token'}`
@@ -73,7 +74,7 @@ export default function VersionHistory({
       setSaving(true);
       const token = await getIdToken();
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/resumes/${resumeId}/history`, {
+      const response = await fetch(`${getBackendUrl()}/api/resumes/${resumeId}/history`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +111,7 @@ export default function VersionHistory({
       setRestoringId(historyId);
       const token = await getIdToken();
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/resumes/${resumeId}/restore/${historyId}`, {
+      const response = await fetch(`${getBackendUrl()}/api/resumes/${resumeId}/restore/${historyId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

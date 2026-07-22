@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getBackendUrl } from '@/lib/config';
 import { 
   Sparkles, 
   Save, 
@@ -47,7 +48,7 @@ export default function CoverLetterEditor({
       try {
         setError('');
         const token = await getIdToken();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/cover-letters/resume/${resumeId}`, {
+        const response = await fetch(`${getBackendUrl()}/api/cover-letters/resume/${resumeId}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token || 'mock-dev-token'}`
@@ -84,7 +85,7 @@ export default function CoverLetterEditor({
       setGenerating(true);
       const token = await getIdToken();
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/cover-letters`, {
+      const response = await fetch(`${getBackendUrl()}/api/cover-letters`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ export default function CoverLetterEditor({
       setSaving(true);
       const token = await getIdToken();
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/cover-letters/${letterId}`, {
+      const response = await fetch(`${getBackendUrl()}/api/cover-letters/${letterId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

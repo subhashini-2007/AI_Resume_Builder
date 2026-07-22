@@ -331,6 +331,21 @@ a {
   .user-email-header {
     display: none !important;
   }
+  .navbar-header {
+    padding: 0.6rem 1rem !important;
+  }
+  .brand-logo-text {
+    display: none !important;
+  }
+  .nav-link-text {
+    display: none !important;
+  }
+  .navbar-actions {
+    gap: 0.8rem !important;
+  }
+  .user-divider {
+    display: none !important;
+  }
 }
 
 .remove-tag-btn {

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getBackendUrl } from '@/lib/config';
 import { 
   User, 
   Phone, 
@@ -41,7 +42,7 @@ export default function ProfileForm() {
       try {
         setError('');
         const token = await getIdToken();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/users/profile`, {
+        const response = await fetch(`${getBackendUrl()}/api/users/profile`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -91,7 +92,7 @@ export default function ProfileForm() {
       setSaving(true);
       const token = await getIdToken();
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/users/profile`, {
+      const response = await fetch(`${getBackendUrl()}/api/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,17 +130,24 @@ export default function ProfileForm() {
       {error && (
         <div style={{
           display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-          border: '1px solid rgba(239, 68, 68, 0.2)',
+          flexDirection: 'column',
+          gap: '0.5rem',
+          backgroundColor: 'rgba(239, 68, 68, 0.08)',
+          border: '1px solid rgba(239, 68, 68, 0.15)',
           borderRadius: '8px',
-          padding: '0.75rem 1rem',
+          padding: '1rem',
           color: 'var(--error)',
           fontSize: '0.9rem'
         }}>
-          <AlertCircle size={18} style={{ flexShrink: 0 }} />
-          <span>{error}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <AlertCircle size={18} style={{ flexShrink: 0 }} />
+            <span style={{ fontWeight: 600 }}>{error}</span>
+          </div>
+          {(error.toLowerCase().includes('fetch') || error.toLowerCase().includes('load') || error.toLowerCase().includes('retrieve')) && (
+            <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)', borderTop: '1px solid rgba(239, 68, 68, 0.1)', paddingTop: '0.5rem' }}>
+              Connection failed. If you need to change the backend API server address, click the <strong>Server</strong> settings icon in the top navigation bar.
+            </p>
+          )}
         </div>
       )}
 

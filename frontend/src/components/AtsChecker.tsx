@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getBackendUrl } from '@/lib/config';
 import { 
   Sparkles, 
   Search, 
@@ -44,7 +45,7 @@ export default function AtsChecker({ resumeId, resumeData }: AtsCheckerProps) {
       setSkillResult(null);
 
       const token = await getIdToken();
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+      const backendUrl = getBackendUrl();
       const payload = { resumeId, resumeData, jobDescription };
 
       // Trigger all three AI endpoints concurrently

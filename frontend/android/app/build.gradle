@@ -1,0 +1,53 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace "com.subhashini.airesumebuilder"
+    compileSdk 34
+    defaultConfig {
+        applicationId "com.subhashini.airesumebuilder"
+        minSdk 29
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+            ignoreAssetsPattern "!.svn:!.git:!.ds_store:!*.scc:.*:gcmd:directory:?.yaml:?.yml:?.json"
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file("release-key.jks")
+            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "airesumebuilder123"
+            keyAlias System.getenv("ANDROID_KEY_ALIAS") ?: "airesumekey"
+            keyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: "airesumebuilder123"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation project(':capacitor-android')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+apply from: 'capacitor.build.gradle'

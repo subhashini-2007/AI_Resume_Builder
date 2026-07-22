@@ -4,18 +4,21 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Layout, LogOut, Settings } from 'lucide-react';
+import { Sparkles, Layout, LogOut, Settings, Server } from 'lucide-react';
+import { getBackendUrl } from '@/lib/config';
+import ApiConfigModal from './ApiConfigModal';
 
 export default function Navbar() {
   const { currentUser, logout, getIdToken } = useAuth();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   useEffect(() => {
     const checkAdmin = async () => {
       try {
         const token = await getIdToken();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/users/profile`, {
+        const response = await fetch(`${getBackendUrl()}/api/users/profile`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token || 'mock-dev-token'}`
@@ -54,14 +57,14 @@ export default function Navbar() {
       top: 0,
       zIndex: 100,
       padding: '0.8rem 2rem'
-    }}>
+    }} className="navbar-header">
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
-      }}>
+      }} className="navbar-container">
         
         {/* Brand Logo */}
         <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
@@ -83,14 +86,14 @@ export default function Navbar() {
             background: 'linear-gradient(to right, #ffffff, #94a3b8)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
-          }}>
+          }} className="brand-logo-text">
             AI Resume Builder
           </span>
         </Link>
 
         {/* Action Controls */}
         {currentUser && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }} className="navbar-actions">
             <Link href="/dashboard" style={{
               display: 'flex',
               alignItems: 'center',
@@ -101,8 +104,28 @@ export default function Navbar() {
               fontWeight: 500
             }} className="nav-link">
               <Layout size={16} />
-              <span>Dashboard</span>
+              <span className="nav-link-text">Dashboard</span>
             </Link>
+
+            <button 
+              onClick={() => setIsConfigOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                color: 'var(--text-secondary)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: 500,
+                padding: 0
+              }} 
+              className="nav-link"
+            >
+              <Server size={16} />
+              <span className="nav-link-text">Server</span>
+            </button>
 
             {isAdmin && (
               <Link href="/admin" style={{
@@ -115,7 +138,7 @@ export default function Navbar() {
                 fontWeight: 600
               }} className="nav-link">
                 <Settings size={16} />
-                <span>Admin Center</span>
+                <span className="nav-link-text">Admin</span>
               </Link>
             )}
 
@@ -123,9 +146,9 @@ export default function Navbar() {
               width: '1px',
               height: '16px',
               background: 'var(--border-color)'
-            }} />
+            }} className="user-divider" />
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="user-profile-section">
               <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }} className="user-email-header">
                 {currentUser.email}
               </span>
@@ -152,7 +175,7 @@ export default function Navbar() {
         )}
 
       </div>
-
+      <ApiConfigModal isOpen={isConfigOpen} onClose={() => setIsConfigOpen(false)} />
     </header>
   );
 }

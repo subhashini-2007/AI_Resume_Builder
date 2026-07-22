@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { 
   User,
   signInWithEmailAndPassword,
@@ -10,6 +11,7 @@ import {
   onAuthStateChanged
 } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { getBackendUrl } from '@/lib/config';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -28,6 +30,7 @@ const isMockMode = !process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
                      process.env.NEXT_PUBLIC_FIREBASE_API_KEY.startsWith('your-');
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -59,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Mock profile backend registration call
       try {
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/users/profile`, {
+        await fetch(`${getBackendUrl()}/api/users/profile`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -105,6 +108,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!currentUser) return null;
     return currentUser.getIdToken();
   };
+
+  useEffect(() => {
+    let active = true;
+    let listenerHandle: any = null;
+    
+    const registerBackButton = async () => {
+      if (typeof window !== 'undefined') {
+        try {
+          const { App } = await import('@capacitor/app');
+          const handle = await App.addListener('backButton', ({ canGoBack }) => {
+            const cleanPathname = pathname.endsWith('/') && pathname !== '/' 
+              ? pathname.slice(0, -1) 
+              : pathname;
+
+            if (
+              cleanPathname === '/' || 
+              cleanPathname === '/dashboard' || 
+              cleanPathname === '/login' ||
+              !canGoBack
+            ) {
+              App.minimizeApp();
+            } else {
+              window.history.back();
+            }
+          });
+
+          if (!active) {
+            handle.remove();
+          } else {
+            listenerHandle = handle;
+          }
+        } catch (e) {
+          console.log('Capacitor App plugin not available', e);
+        }
+      }
+    };
+
+    registerBackButton();
+
+    return () => {
+      active = false;
+      if (listenerHandle) {
+        listenerHandle.remove();
+      }
+    };
+  }, [pathname]);
 
   useEffect(() => {
     if (isMockMode) {

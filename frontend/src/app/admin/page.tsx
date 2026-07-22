@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
+import { getBackendUrl } from '@/lib/config';
 import { 
   Users, 
   FileText, 
@@ -36,7 +37,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     if (!authLoading && !currentUser) {
-      router.push('/login');
+      router.replace('/login');
     }
   }, [currentUser, authLoading]);
 
@@ -46,7 +47,7 @@ export default function AdminDashboardPage() {
       try {
         setError('');
         const token = await getIdToken();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/admin/analytics`, {
+        const response = await fetch(`${getBackendUrl()}/api/admin/analytics`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token || 'mock-dev-token'}`
@@ -83,7 +84,7 @@ export default function AdminDashboardPage() {
       const token = await getIdToken();
 
       // Log the admin action to backend logs
-      const logResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/admin/log`, {
+      const logResponse = await fetch(`${getBackendUrl()}/api/admin/log`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

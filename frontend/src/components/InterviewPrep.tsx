@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getBackendUrl } from '@/lib/config';
 import { 
   Sparkles, 
   HelpCircle, 
@@ -38,7 +39,7 @@ export default function InterviewPrep({ resumeId, resumeData }: InterviewPrepPro
       
       const token = await getIdToken();
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/ai/interview`, {
+      const response = await fetch(`${getBackendUrl()}/api/ai/interview`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

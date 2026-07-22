@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import ProfileForm from '../../components/ProfileForm';
 import Link from 'next/link';
 import Navbar from '../../components/Navbar';
+import { getBackendUrl } from '@/lib/config';
+import ApiConfigModal from '@/components/ApiConfigModal';
 import { 
   Sparkles, 
   Plus, 
@@ -37,11 +39,12 @@ export default function DashboardPage() {
   const [loadingResumes, setLoadingResumes] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   // Route protection
   useEffect(() => {
     if (!authLoading && !currentUser) {
-      router.push('/login');
+      router.replace('/login');
     }
   }, [currentUser, authLoading]);
 
@@ -51,7 +54,7 @@ export default function DashboardPage() {
       setError('');
       setLoadingResumes(true);
       const token = await getIdToken();
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/resumes`, {
+      const response = await fetch(`${getBackendUrl()}/api/resumes`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +88,7 @@ export default function DashboardPage() {
       setActionLoading(true);
       const token = await getIdToken();
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/resumes`, {
+      const response = await fetch(`${getBackendUrl()}/api/resumes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +122,7 @@ export default function DashboardPage() {
     try {
       setError('');
       const token = await getIdToken();
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/resumes/${id}`, {
+      const response = await fetch(`${getBackendUrl()}/api/resumes/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -166,18 +169,52 @@ export default function DashboardPage() {
         {error && (
           <div style={{
             display: 'flex',
-            alignItems: 'center',
+            flexDirection: 'column',
             gap: '0.75rem',
-            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            borderRadius: '8px',
-            padding: '0.75rem 1rem',
+            backgroundColor: 'rgba(239, 68, 68, 0.08)',
+            border: '1px solid rgba(239, 68, 68, 0.15)',
+            borderRadius: '12px',
+            padding: '1.25rem',
             color: 'var(--error)',
             fontSize: '0.9rem',
             marginBottom: '2.5rem'
           }}>
-            <AlertCircle size={18} />
-            <span>{error}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <AlertCircle size={20} style={{ flexShrink: 0 }} />
+              <span style={{ fontWeight: 600 }}>Connection Error: {error}</span>
+            </div>
+            {(error.toLowerCase().includes('fetch') || error.toLowerCase().includes('retrieving') || error.toLowerCase().includes('load')) && (
+              <div style={{
+                marginTop: '0.25rem',
+                paddingTop: '0.75rem',
+                borderTop: '1px solid rgba(239, 68, 68, 0.1)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                color: 'var(--text-secondary)'
+              }}>
+                <p style={{ margin: 0, fontSize: '0.85rem' }}>
+                  If the backend server is running on your computer and you are viewing this app on a mobile phone, the app cannot connect to <code>localhost</code>. You must use your computer's local IP address or setup ADB port forwarding.
+                </p>
+                <button
+                  onClick={() => setIsConfigOpen(true)}
+                  className="btn-secondary"
+                  style={{
+                    alignSelf: 'flex-start',
+                    padding: '0.4rem 0.8rem',
+                    fontSize: '0.85rem',
+                    marginTop: '0.25rem',
+                    background: 'rgba(239, 68, 68, 0.08)',
+                    border: '1px solid rgba(239, 68, 68, 0.15)',
+                    color: 'var(--error)',
+                    cursor: 'pointer'
+                  }}
+                  type="button"
+                >
+                  Configure Server URL
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -402,7 +439,7 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-
+      <ApiConfigModal isOpen={isConfigOpen} onClose={() => setIsConfigOpen(false)} />
     </div>
   );
 }
