@@ -10,25 +10,26 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
 
   const token = authHeader.split('Bearer ')[1];
 
-  // In development mock mode if Firebase Admin is not initialized
+  // In development mock mode if the mock token is supplied
+  if (token === 'mock-dev-token') {
+    req.user = {
+      uid: 'mock-user-123',
+      email: 'mock-user@example.com',
+      auth_time: Math.floor(Date.now() / 1000),
+      iat: Math.floor(Date.now() / 1000),
+      iss: 'firebase-mock',
+      aud: 'firebase-mock-project',
+      exp: Math.floor(Date.now() / 1000) + 3600,
+      sub: 'mock-user-123',
+      firebase: {
+        identities: {},
+        sign_in_provider: 'custom'
+      }
+    } as any;
+    return next();
+  }
+
   if (!adminAuth) {
-    if (token === 'mock-dev-token') {
-      req.user = {
-        uid: 'mock-user-123',
-        email: 'mock-user@example.com',
-        auth_time: Math.floor(Date.now() / 1000),
-        iat: Math.floor(Date.now() / 1000),
-        iss: 'firebase-mock',
-        aud: 'firebase-mock-project',
-        exp: Math.floor(Date.now() / 1000) + 3600,
-        sub: 'mock-user-123',
-        firebase: {
-          identities: {},
-          sign_in_provider: 'custom'
-        }
-      } as any;
-      return next();
-    }
     return res.status(503).json({ 
       error: 'Service Unavailable', 
       message: 'Authentication engine is not initialized.' 
